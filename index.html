@@ -24,6 +24,7 @@
 
         if (filaActiva) {
           const videoURL = filaActiva[0];
+          console.log("Cargando video:", videoURL); // Para depurar
           const player = document.getElementById("videoPlayer");
           player.src = videoURL;
           player.load();
