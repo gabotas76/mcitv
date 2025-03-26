@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MCI Video Loop</title>
+  <style>
+    body { margin: 0; background: black; }
+    video { width: 100vw; height: 100vh; object-fit: cover; }
+  </style>
+</head>
+<body>
+  <video id="videoPlayer" autoplay loop muted playsinline controls></video>
+
+  <script>
+    async function cargarVideoDesdeSheet() {
+      const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSITv2HXHZ-xWjYOQ48nhN6g8CKVa3FQ7QIFXLbfP4O3qr1mYgjU-EbxoLGTDtrfdy-S5IvsjKyhoX-/pub?output=csv";
+      try {
+        const response = await fetch(sheetURL);
+        const data = await response.text();
+
+        const filas = data.split('\n').map(f => f.split(','));
+        filas.shift(); // quitar encabezado
+
+        const filaActiva = filas.find(f => f[2] && f[2].trim().toLowerCase() === '✅');
+
+        if (filaActiva) {
+          const videoURL = filaActiva[0];
+          const player = document.getElementById("videoPlayer");
+          player.src = videoURL;
+          player.load();
+          player.play();
+        } else {
+          console.warn("No hay video activo");
+        }
+      } catch (error) {
+        console.error("Error cargando video:", error);
+      }
+    }
+
+    cargarVideoDesdeSheet();
+    setInterval(cargarVideoDesdeSheet, 15 * 60 * 1000); // actualizar cada 15 min
+  </script>
+</body>
+</html>
